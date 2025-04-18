@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>주문 조회 - 성심농장</title>
+  <style>
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #fffdf8;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d87c00;
+    }
+
+    form {
+      max-width: 500px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #d87c00;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #b65e00;
+    }
+
+    #result {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff5e6;
+      border-radius: 10px;
+      display: none;
+      white-space: pre-line;
+      font-size: 15px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧾 주문 조회</h1>
+  <form id="lookup-form">
+    <label for="name">이름</label>
+    <input type="text" id="name" name="name" required />
+
+    <label for="phone">전화번호</label>
+    <input type="text" id="phone" name="phone" required />
+
+    <button type="submit">조회하기</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById("lookup-form");
+    const resultBox = document.getElementById("result");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      fetch(`https://script.google.com/macros/s/AKfycbzEm9OC3LbLCOidzE1NrxsesCHWmcew0umDrEQ0Pz4M9xtjJ3WvH-3MuKEjrjqw_vVW/exec?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`)
+        .then(res => res.text())
+        .then(data => {
+          resultBox.style.display = "block";
+          resultBox.textContent = data;
+        })
+        .catch(err => {
+          resultBox.style.display = "block";
+          resultBox.textContent = "조회 실패: " + err;
+        });
+    });
+  </script>
+</body>
+</html>
