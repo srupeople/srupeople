@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>주문서 - 경민이네 복숭아 농장</title>
+  <style>
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #fffdf8;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d87c00;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #d87c00;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #b65e00;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 주문서 작성</h1>
+  <form id="order-form">
+    <label for="name">이름</label>
+    <input type="text" id="name" name="name" required />
+
+    <label for="phone">연락처</label>
+    <input type="tel" id="phone" name="phone" required />
+
+    <label for="address">배송 주소</label>
+    <textarea id="address" name="address" rows="3" required></textarea>
+
+    <label for="memo">배송 요청사항</label>
+    <textarea id="memo" name="memo" rows="3"></textarea>
+
+    <button type="submit">주문하기</button>
+  </form>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyFnnb02xF6ZsWjLnnhOSz-5Bs4T3xMkK2IW8ikEhJuNStNMIapKm5rITOsGJmyvbjo/exec";
+    const form = document.getElementById("order-form");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = {
+        name: form.name.value,
+        phone: form.phone.value,
+        address: form.address.value,
+        memo: form.memo.value
+      };
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(response => {
+        alert("주문이 접수되었습니다!");
+        form.reset();
+      }).catch(error => {
+        alert("주문 전송 실패: " + error);
+      });
+    });
+  </script>
+</body>
+</html>

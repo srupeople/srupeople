@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>장바구니 - 경민이네 복숭아 농장</title>
+  <style>
+    body {
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #fffdf8;
+      padding: 40px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d87c00;
+    }
+
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: 40px auto;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      padding: 14px 20px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffe0b2;
+      color: #333;
+    }
+
+    tfoot td {
+      font-weight: bold;
+      font-size: 18px;
+      background-color: #fff3e0;
+    }
+
+    .checkout-btn, .clear-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #d87c00;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .clear-btn {
+      background-color: #999;
+      margin-top: 10px;
+    }
+
+    .checkout-btn:hover {
+      background-color: #b65e00;
+    }
+
+    .clear-btn:hover {
+      background-color: #666;
+    }
+
+    input.qty-input {
+      width: 50px;
+      padding: 6px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .remove-btn {
+      color: red;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛒 장바구니</h1>
+
+  <table id="cart-table">
+    <thead>
+      <tr>
+        <th>상품명</th>
+        <th>수량</th>
+        <th>가격</th>
+        <th>합계</th>
+        <th>삭제</th>
+      </tr>
+    </thead>
+    <tbody id="cart-body">
+      <!-- JS로 채움 -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">총합</td>
+        <td id="cart-total">0원</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <a class="checkout-btn" href="order_주문서.html">주문서 작성으로 이동</a>
+  <button class="clear-btn" onclick="clearCart()">장바구니 비우기</button>
+
+  <script>
+    const cartBody = document.getElementById("cart-body");
+    const cartTotal = document.getElementById("cart-total");
+    const formatter = new Intl.NumberFormat("ko-KR");
+
+    function loadCart() {
+      cartBody.innerHTML = "";
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const subtotal = item.qty * item.price;
+        total += subtotal;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td><input type="number" class="qty-input" min="1" value="${item.qty}" onchange="updateQty(${index}, this.value)" /></td>
+          <td>${formatter.format(item.price)}원</td>
+          <td>${formatter.format(subtotal)}원</td>
+          <td><span class="remove-btn" onclick="removeItem(${index})">삭제</span></td>
+        `;
+        cartBody.appendChild(row);
+      });
+
+      cartTotal.textContent = formatter.format(total) + "원";
+    }
+
+    function updateQty(index, newQty) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart[index].qty = parseInt(newQty);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function clearCart() {
+      if (confirm("장바구니를 비우시겠습니까?")) {
+        localStorage.removeItem("cart");
+        loadCart();
+      }
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
